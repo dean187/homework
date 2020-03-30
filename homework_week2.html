@@ -8,20 +8,20 @@
 
     <!-- 부트스트랩 -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
-          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <!-- 구글 폰트 -->
     <link href="https://fonts.googleapis.com/css?family=Cute+Font&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Sunflower:300&display=swap" rel="stylesheet">
     <!-- JQUERY -->
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-            integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
-            crossorigin="anonymous"></script>
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
-            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
-            crossorigin="anonymous"></script>
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
-            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
-            crossorigin="anonymous"></script>
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 </head>
@@ -73,7 +73,19 @@
 
 
 
+    function isCellPhone(p) {
+        p = p.split('-').join('');
+        var regPhone = /^((01[1|6|7|8|9])[1-9]+[0-9]{6,7})|(010[1-9][0-9]{7})$/;
+        return regPhone.test(p);
+    }
 
+    function neForm(a) {
+        if (a[3] != "-" || a[8] != "-") {
+            return false
+        } else {
+            return true
+        }
+    }
 
     function order() {
         let name_value = $('#name').val();
@@ -81,21 +93,9 @@
         let address_value = $('#address').val();
         let phonenumber_value = $('#phonenumber').val();
 
+        // TODO: 함수 in 함수보다는, 밖에 선언하는게 좋습니다! (재사용)
         //핸드폰 형식 체크 추가....
-        function isCellPhone(p) {
-            p = p.split('-').join('');
-            var regPhone = /^((01[1|6|7|8|9])[1-9]+[0-9]{6,7})|(010[1-9][0-9]{7})$/;
-            return regPhone.test(p);
-        }
         numberCheck = isCellPhone(phonenumber_value);
-
-        function neForm(a) {
-            if (a[3] != "-" || a[8] != "-") {
-                return false
-            }else{
-                return true
-            }
-        }
         phoneForm = neForm(phonenumber_value);
 
         //이름, 수량, 주소, 휴대폰번호 중 하나라도 입력되어 있지 않으면, alert이 뜨고, 입력 안한 곳에 포커스가 맞춰지도록
@@ -126,6 +126,8 @@
         //입력한 데이터.. 테이블에 추가
         let html = '<tr>' + '<th>' + name_value + '</th>' + '<td>' + amount_value + '</td>' + '<td>' + address_value + '</td>' + '<td>' + phonenumber_value + '</td>' + '</tr>';
         $('.sub_table').append(html);
+
+        // TODO: return true는 어떤 맥락일까요?
         return true;
 
     }
@@ -136,7 +138,7 @@
     <!-- 상품 설명 -->
     <div class="page">
         <img src="http://www.earlyadopter.co.kr/wp-content/uploads/2020/02/%E1%84%89%E1%85%A1%E1%86%B7%E1%84%89%E1%85%A5%E1%86%BC-%E1%84%80%E1%85%A2%E1%86%AF%E1%84%85%E1%85%A5%E1%86%A8%E1%84%89%E1%85%B5-Z-%E1%84%91%E1%85%B3%E1%86%AF%E1%84%85%E1%85%B5%E1%86%B8-%E1%84%90%E1%85%A9%E1%86%B7%E1%84%87%E1%85%B3%E1%84%85%E1%85%A1%E1%84%8B%E1%85%AE%E1%86%AB-%E1%84%8B%E1%85%A6%E1%84%83%E1%85%B5%E1%84%89%E1%85%A7%E1%86%AB-4-1.jpg"
-             alt="">
+            alt="">
         <div class="product">
             <span class="zoo">갤럭시 톰프라운 에디션</span>
             <span class="card_text">상품가격 : 200,000원/개</span>
@@ -155,7 +157,7 @@
                         <span class="input-group-text" id="inputGroup-sizing-sm">이름</span>
                     </div>
                     <input type="text" id="name" class="form-control" aria-label="Small"
-                           aria-describedby="inputGroup-sizing-sm" placeholder="이름을 적어주세요">
+                        aria-describedby="inputGroup-sizing-sm" placeholder="이름을 적어주세요">
                 </div>
 
                 <div class="input-group mb-3">
@@ -181,14 +183,14 @@
                         <span class="input-group-text" id="inputGroup-sizing-sm">주소</span>
                     </div>
                     <input type="text" id="address" class="form-control" aria-label="Small"
-                           aria-describedby="inputGroup-sizing-sm" placeholder="받으실 주소를 적어주세요">
+                        aria-describedby="inputGroup-sizing-sm" placeholder="받으실 주소를 적어주세요">
                 </div>
                 <div class="input-group input-group-sm mb-3">
                     <div class="input-group-prepend">
                         <span class="input-group-text" id="inputGroup-sizing-sm">전화번호</span>
                     </div>
                     <input type="text" id="phonenumber" class="form-control" aria-label="Small"
-                           aria-describedby="inputGroup-sizing-sm" placeholder="받으실 연락처를 적어주세요">
+                        aria-describedby="inputGroup-sizing-sm" placeholder="받으실 연락처를 적어주세요">
                 </div>
             </div>
 

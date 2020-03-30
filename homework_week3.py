@@ -9,6 +9,7 @@ data = requests.get(url, headers=headers)
 
 soup = BeautifulSoup(data.text, 'html.parser')
 
+
 musics = soup.select('.list-wrap>tbody>tr')
 rank = 0
 # 반복으로 돌려주기
@@ -19,11 +20,12 @@ for music in musics:
     #singer = music.select('.info>a')
     #print(singer)
     #print(name)
+    # TODO: 이 if 문을 없앨 수 었습니다. 13번째 줄을 고치면 되는데요!
     if len(music_name)>0:
         rank += 1
         name = music_name[0].text.strip()
         singer = music_name[1].text
         album = music_name[2].text
     #print(rank,'-', name,'-', singer)
-    jini_music = '[{}] - {} - {} /// {}'.format(rank, name, singer, album)
+    jini_music = '[{}] - {} - {} /// {}'.format(rank, name, singer, album) # TODO: 굿입니다!
     print(jini_music)

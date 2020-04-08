@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <!-- 부트스트랩 -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <!-- 구글 폰트 -->
+    <link href="https://fonts.googleapis.com/css?family=Cute+Font&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Sunflower:300&display=swap" rel="stylesheet">
+    <!-- JQUERY -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+            integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+            crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+            crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+            crossorigin="anonymous"></script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+</head>
+<style>
+    .page {
+        width: 900px;
+        margin: auto;
+        padding: 10px;
+    }
+
+    img {
+        width: 900px;
+        margin: auto;
+    }
+
+    .zoo {
+        font-size: 50px;
+        font-weight: bold;
+        margin-right: 30px;
+    }
+
+    .product {
+        font-family: 'Cute Font', cursive;
+    }
+
+    .card_text {
+        font-size: 30px;
+    }
+
+    .form {
+        font-weight: bold;
+    }
+
+    .zutext {
+        font-size: 25px;
+    }
+
+    .table {
+        margin: 50px auto;
+    }
+
+    #input-group-text {
+        font-family: 'Sunflower', sans-serif;
+    }
+</style>
+<script>
+    $(document).ready(function () {
+        $('.table').html('');
+        listing();
+    });
+
+    function isCellPhone(p) {
+        p = p.split('-').join('');
+        var regPhone = /^((01[1|6|7|8|9])[1-9]+[0-9]{6,7})|(010[1-9][0-9]{7})$/;
+        return regPhone.test(p);
+    }
+    function neForm(a) {
+        if (a[3] != "-" || a[8] != "-") {
+            return false
+        } else {
+            return true
+        }
+    }
+    numberCheck = isCellPhone(phonenumber_value);
+    phoneForm = neForm(phonenumber_value);
+
+
+
+    function make_order() {
+        // 1. 이름, 수량, 주소, 휴대폰번호 내용을 가져옵니다.
+        let name_value = $('#name').val();
+        let amount_value = $('#amount').val();
+        let address_value = $('#address').val();
+        let phonenumber_value = $('#phonenumber').val();
+        // 2. 이름, 수량, 주소, 휴대폰번호 중 하나라도 입력되어 있지 않으면, alert이 뜨고, 입력 안한 곳에 포커스가 맞춰지도록
+        if (name_value == "") {
+            alert("이름을 입력해주세요.");
+            $('#name').focus();
+            return; //입력이 없으면 여기서 진행을 멈춰라
+        } else if (name_value != "" && amount_value == "--- 수량을 선택해주세요. ---" && address_value == 0) {
+            alert("수량을 입력해주세요.");
+            $('#amount').focus();
+            return;
+        } else if (name_value != "" && amount_value != "--- 수량을 선택해주세요. ---" && address_value == "") {
+            alert("주소을 입력해주세요.");
+            $('#address').focus();
+            return;
+        } else if (name_value != "" && amount_value != "--- 수량을 선택해주세요. ---" && address_value != "" && phonenumber_value == "") {
+            alert("연락처을 입력해주세요.");
+            $('#phonenum015er').focus();
+            return;
+        } else if (numberCheck == false || phoneForm == false) {
+            alert("휴대폰 번호 입력형식이 틀립니다. 010-0000-0000으로 입력해주세요")
+            $('#phonenumber').focus();
+            return;
+        } else {
+            alert("주문완료!!");
+        }
+
+        let data_give = {
+            'name_give': name_value,
+            'amount_give': amount_value,
+            'address_give': address_value,
+            'phonenumber_give': phonenumber_value
+        }
+
+        // 3. POST /reviews 에 저장을 요청합니다.
+        $.ajax({
+            type: 'POST', // 타입을 작성합니다.
+            url: '/orders', // url을 작성합니다.
+            data: { data_give }, // data를 작성합니다. },
+            success: function (response) {
+                if (response['result'] == 'success') {
+                    alert(response['msg']);
+                    window.location.reload();
+                }
+            }
+        });
+    }
+    
+
+    function listing() {
+        // 1. 리뷰 목록을 서버에 요청하기
+        // 2. 요청 성공 여부 확인하기
+        // 3. 요청 성공했을 때 리뷰를 올바르게 화면에 나타내기
+        $.ajax({
+            type: "GET",
+            url: "/orders",
+            data: {},
+            success: function (response) {
+                if (response['result'] == 'success') {
+                    alert(response['msg']);
+                    // 2. 성공했을 때 리뷰를 올바르게 화면에 나타내기
+                } else {
+                    alert('리뷰를 받아오지 못했습니다');
+                }
+            }
+        });
+    }
+
+    function make_card(title, author, review) {
+        let temp_html = '<tr>\
+                                <td>'+ title + '</td>\
+                                <td>'+ author + '</td>\
+                                <td>'+ review + '</td>\
+                            </tr>';
+        $('#orders-box').append(temp_html);
+    }
+
+    function is_long(obj) {
+        let content = $(obj).val();
+        if (content.length > 140) {
+            alert('리뷰는 140자까지 기록할 수 있습니다.');
+            $(obj).val(content.substring(0, content.length - 1));
+        }
+    }
+
+
+    //입력한 데이터.. 테이블에 추가
+    let html = '<tr>' + '<th>' + name_value + '</th>' + '<td>' + amount_value + '</td>' + '<td>' + address_value + '</td>' + '<td>' + phonenumber_value + '</td>' + '</tr>';
+    $('.sub_table').append(html);
+    return;
+
+
+
+</script>
+
+<body>
+    <!-- 상품 설명 -->
+    <div class="page">
+        <img src="http://www.earlyadopter.co.kr/wp-content/uploads/2020/02/%E1%84%89%E1%85%A1%E1%86%B7%E1%84%89%E1%85%A5%E1%86%BC-%E1%84%80%E1%85%A2%E1%86%AF%E1%84%85%E1%85%A5%E1%86%A8%E1%84%89%E1%85%B5-Z-%E1%84%91%E1%85%B3%E1%86%AF%E1%84%85%E1%85%B5%E1%86%B8-%E1%84%90%E1%85%A9%E1%86%B7%E1%84%87%E1%85%B3%E1%84%85%E1%85%A1%E1%84%8B%E1%85%AE%E1%86%AB-%E1%84%8B%E1%85%A6%E1%84%83%E1%85%B5%E1%84%89%E1%85%A7%E1%86%AB-4-1.jpg"
+             alt="">
+        <div class="product">
+            <span class="zoo">갤럭시 톰프라운 에디션</span>
+            <span class="card_text">상품가격 : 200,000원/개</span>
+            <p class="zutext">S브랜드가 선사하는 완전히 새로운 경험
+                톰브라운 특유의 디자인이 삼성의두혁신적인 스마트폰인 갤럭시 Z 플립과 웨어러블 기기들에 더해져
+                하나의 패키지로 구성된 럭셔리하고 특별한 에디션이 탄생</p>
+            <span class="zoo">주문하기</span>
+        </div>
+
+
+        <form>
+            <!-- 주문하기 항목 탭 -->
+            <div class="menu">
+                <div class="input-group input-group-sm mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="inputGroup-sizing-sm">이름</span>
+                    </div>
+                    <input type="text" id="name" class="form-control" aria-label="Small"
+                           aria-describedby="inputGroup-sizing-sm" placeholder="이름을 적어주세요">
+                </div>
+
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text" for="inputGroupSelect01">수량</label>
+                    </div>
+                    <select class="custom-select" id="amount">
+                        <option selected>--- 수량을 선택해주세요. ---</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="3">4</option>
+                        <option value="3">5</option>
+                        <option value="3">6</option>
+                        <option value="3">7</option>
+                        <option value="3">8</option>
+                        <option value="3">9</option>
+                    </select>
+                </div>
+
+                <div class="input-group input-group-sm mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="inputGroup-sizing-sm">주소</span>
+                    </div>
+                    <input type="text" id="address" class="form-control" aria-label="Small"
+                           aria-describedby="inputGroup-sizing-sm" placeholder="받으실 주소를 적어주세요">
+                </div>
+                <div class="input-group input-group-sm mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="inputGroup-sizing-sm">전화번호</span>
+                    </div>
+                    <input type="text" id="phonenumber" class="form-control" aria-label="Small"
+                           aria-describedby="inputGroup-sizing-sm" placeholder="받으실 연락처를 적어주세요">
+                </div>
+            </div>
+
+            <!-- 주문하기 버튼 -->
+            <div style="text-align: center;">
+                <!-- TODO: 버튼을 중앙으로 정렬하려면 어떻게 해야 할까요? -->
+                <button onclick="make_order()" type="button" class="btn btn-primary">주문하기</button>
+            </div>
+            <!-- 주문하기 테이블 -->
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">이름</th>
+                        <th scope="col">수량</th>
+                        <th scope="col">주소</th>
+                        <th scope="col">전화번호</th>
+                    </tr>
+                </thead>
+                <tbody class="sub_table">
+                    <tr>
+                        <th scope="row">김민진</th>
+                        <td>2</td>
+                        <td>서울 강북구</td>
+                        <td>010-0000-0000</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">강백호</th>
+                        <td>1</td>
+                        <td>서울 성북구</td>
+                        <td>010-0000-0000</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">서태웅</th>
+                        <td>3</td>
+                        <td>서울 강남구</td>
+                        <td>010-0000-0000</td>
+                    </tr>
+                </tbody>
+            </table>
+        </form>
+    </div>
+
+</body>
+
+</html>
